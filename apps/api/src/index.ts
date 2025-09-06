@@ -6,12 +6,14 @@ import { SqliteUserRepository } from "./auth/infrastructure/repositories/SqliteU
 import { SimpleAuthenticationService } from "./auth/infrastructure/services/SimpleAuthenticationService";
 import { LoginUseCase } from "./auth/application/use-cases/LoginUseCase";
 import { AuthController } from "./auth/infrastructure/http/AuthController";
+import { JwtAuthMiddleware } from "./auth/infrastructure/middleware/JwtAuthMiddleware";
 
 // Initialize dependencies (Dependency Injection)
 const userRepository = new SqliteUserRepository(db);
 const authService = new SimpleAuthenticationService();
 const loginUseCase = new LoginUseCase(userRepository, authService);
 const authController = new AuthController(loginUseCase);
+const jwtMiddleware = new JwtAuthMiddleware(authService);
 
 const app = new Elysia()
   .use(cors({
@@ -20,6 +22,12 @@ const app = new Elysia()
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
   }))
+  .derive(async ({ headers }) => {
+    const authContext = await jwtMiddleware.authenticate(headers.authorization);
+    return {
+      auth: authContext
+    };
+  })
   .use(
     swagger({
       documentation: {
@@ -130,6 +138,36 @@ const app = new Elysia()
         message: t.String()
       }),
       500: t.Object({
+        success: t.Boolean(),
+        message: t.String()
+      })
+    }
+  })
+  .get("/api/profile", ({ auth }) => {
+    return {
+      success: true,
+      message: "Profile data retrieved successfully",
+      user: auth.user,
+      timestamp: new Date().toISOString()
+    };
+  }, {
+    ...jwtMiddleware.createProtectedHandler(),
+    detail: {
+      summary: 'Get User Profile',
+      description: 'Obtiene la información del perfil del usuario autenticado (requiere JWT token)',
+      tags: ['Authentication']
+    },
+    response: {
+      200: t.Object({
+        success: t.Boolean(),
+        message: t.String(),
+        user: t.Object({
+          userId: t.Number(),
+          username: t.String()
+        }),
+        timestamp: t.String()
+      }),
+      401: t.Object({
         success: t.Boolean(),
         message: t.String()
       })

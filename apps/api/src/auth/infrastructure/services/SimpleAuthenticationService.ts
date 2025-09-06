@@ -1,6 +1,14 @@
 import jwt from 'jsonwebtoken';
 import { AuthenticationService } from '../../domain/services/AuthenticationService';
 
+interface JwtPayload {
+  userId: number;
+  username: string;
+  iat: number;
+  exp?: number;
+  iss?: string;
+}
+
 export class SimpleAuthenticationService implements AuthenticationService {
   private readonly jwtSecret = 'your-super-secret-jwt-key'; // TODO: Move to environment variable
   private readonly jwtExpiresIn = '24h';
@@ -17,16 +25,16 @@ export class SimpleAuthenticationService implements AuthenticationService {
     return password;
   }
 
-  generateJwtToken(payload: Record<string, any>): string {
+  generateJwtToken(payload: Omit<JwtPayload, 'iat'>): string {
     return jwt.sign(payload, this.jwtSecret, {
       expiresIn: this.jwtExpiresIn,
       issuer: 'gestor-fincas-api'
     });
   }
 
-  validateJwtToken(token: string): Record<string, any> | null {
+  validateJwtToken(token: string): JwtPayload | null {
     try {
-      return jwt.verify(token, this.jwtSecret) as Record<string, any>;
+      return jwt.verify(token, this.jwtSecret) as JwtPayload;
     } catch (error) {
       return null;
     }

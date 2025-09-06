@@ -5,7 +5,8 @@
       "Bash(bunx tailwindcss init:*)",
       "Bash(bun remove:*)",
       "WebFetch(domain:daisyui.com)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(bun run:*)"
     ],
     "deny": [],
     "ask": []

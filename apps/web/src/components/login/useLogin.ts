@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
+import { useAuth } from '../../hooks/useAuth'
 
 interface LoginCredentials {
   username: string
@@ -9,9 +10,15 @@ interface LoginCredentials {
 interface LoginResponse {
   success: boolean
   message?: string
+  token?: string
+  user?: {
+    id: number
+    username: string
+  }
 }
 
 export const useLogin = () => {
+  const { login: setAuth } = useAuth()
   const [credentials, setCredentials] = useState<LoginCredentials>({
     username: '',
     password: ''
@@ -31,10 +38,15 @@ export const useLogin = () => {
         throw new Error('Invalid credentials')
       }
 
-      return { success: true }
+      const result = await response.json()
+      return result
     },
-    onSuccess: () => {
+    onSuccess: (data: LoginResponse) => {
       console.log('Login successful')
+      if (data.token && data.user) {
+        // Use the auth hook to manage authentication state
+        setAuth(data.token, data.user)
+      }
     },
     onError: (error) => {
       console.error('Login failed:', error)

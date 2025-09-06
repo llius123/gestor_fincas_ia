@@ -1,8 +1,46 @@
 # Web - Gestor Fincas IA
 
-Este directorio contiene la aplicación web frontend del sistema de gestión de fincas.
+## 🚨 NORMAS OBLIGATORIAS - LEER PRIMERO
 
-## Propósito
+### ✅ Reglas de Código OBLIGATORIAS
+- **NUNCA usar `any`** - Tipado estricto obligatorio
+- **SIEMPRE seguir arquitectura Container/Component** - Ver sección detallada abajo
+
+### 🏗️ ARQUITECTURA OBLIGATORIA - Container/Component Pattern
+
+**ANTES de escribir cualquier componente, SIEMPRE separar en 3 piezas:**
+
+1. **Hook** (`useFeatureName.ts`) - Lógica, estado y API calls
+2. **Container** (`FeatureContainer.tsx`) - Coordinación y llamada de hooks  
+3. **View** (`FeatureView.tsx`) - UI pura que solo recibe props
+
+**Estructura OBLIGATORIA:**
+```typescript
+// ✅ CORRECTO - SIEMPRE ASÍ
+src/components/feature/
+├── FeatureContainer.tsx    # Lógica y hooks
+├── FeatureView.tsx        # UI pura con props
+└── useFeature.ts          # API calls y estado
+
+// ❌ INCORRECTO - NUNCA ASÍ  
+src/routes/feature.tsx     # Todo mezclado
+```
+
+### 📋 CHECKLIST OBLIGATORIO - Verificar SIEMPRE
+
+Antes de hacer commit, verificar:
+
+- [ ] ✅ ¿Separé Container/View?
+- [ ] ✅ ¿El View es puro (solo recibe props)?
+- [ ] ✅ ¿La lógica está en el Hook o Container?
+- [ ] ✅ ¿Sin `any` en ninguna parte?
+- [ ] ✅ ¿Sigue la estructura de carpetas correcta?
+
+**Si alguna respuesta es NO, CORREGIR antes de continuar.**
+
+---
+
+## Propósito del Proyecto
 
 - Interfaz de usuario para la gestión de fincas
 - Dashboard interactivo para visualización de datos
@@ -17,11 +55,7 @@ Este directorio contiene la aplicación web frontend del sistema de gestión de 
 - Interfaz para consultas y predicciones de IA
 - Sistema de notificaciones y alertas
 
-## Normas de desarollo
-
-- No usar `any`
-
-## Routes
+## Routes (OBLIGATORIO)
 
 Utiliza **TanStack Router** para el manejo de rutas con generación automática y tipado completo.
 
@@ -139,11 +173,16 @@ export const useLogin = () => {
 - **Query keys**: `['users'], ['farms', farmId], ['crops', { status: 'active' }]`
 - **Mutations**: `useCreateFarm`, `useUpdateCrop`, `useDeleteUser`
 
-## Arquitectura de Componentes
+## 🏗️ ARQUITECTURA OBLIGATORIA DE COMPONENTES
 
-### Patrón Container/Component
+### ⚠️ IMPORTANTE: Patrón Container/Component OBLIGATORIO
 
-Utilizamos el patrón **Container/Component** (Smart/Dumb Components) para separar claramente la lógica de negocio de la presentación.
+**TODOS los componentes DEBEN seguir el patrón Container/Component.** Este es un requisito no negociable del proyecto.
+
+**ANTES de escribir cualquier componente, preguntarse:**
+1. ¿Dónde va la lógica? → Container + Hook
+2. ¿Dónde va la UI? → View (puro, solo props)
+3. ¿Está todo separado correctamente? → Verificar checklist
 
 #### Estructura de Carpetas
 ```
@@ -167,7 +206,9 @@ src/
 | **View** | UI pura, props, presentación | `login/`, `dashboard/` | `LoginView.tsx` |
 | **Hook** | Lógica reutilizable | Junto al componente | `useLogin.ts` |
 
-#### Ejemplo: Autenticación
+#### ✅ EJEMPLO CORRECTO: Autenticación
+
+**SIEMPRE seguir esta estructura exacta:**
 
 **Hook personalizado** (`components/login/useLogin.ts`):
 ```typescript
@@ -234,7 +275,33 @@ export function LoginView({ credentials, isLoading, error, onInputChange, onSubm
 }
 ```
 
-#### Ventajas de esta Arquitectura
+#### ❌ EJEMPLO INCORRECTO - NUNCA HACER ESTO:
+
+```typescript
+// ❌ MAL - Todo mezclado en una ruta
+function Profile() {
+  const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(false)
+  
+  const handleLogout = () => {
+    // lógica mezclada con UI
+  }
+
+  return (
+    <div>
+      {/* UI mezclada con lógica */}
+    </div>
+  )
+}
+```
+
+**Problemas de este enfoque:**
+- ❌ Lógica mezclada con UI
+- ❌ No reutilizable
+- ❌ Difícil de testear
+- ❌ Va contra las normas del proyecto
+
+#### Ventajas de la Arquitectura Correcta
 
 1. **Separación de responsabilidades**: UI vs lógica de negocio
 2. **Reutilización**: Componentes puros pueden usarse en diferentes contextos

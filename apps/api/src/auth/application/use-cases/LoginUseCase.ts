@@ -35,8 +35,7 @@ export class LoginUseCase {
 
       const token = this.authService.generateJwtToken({
         userId: user.id,
-        username: user.username,
-        iat: Math.floor(Date.now() / 1000)
+        username: user.username
       });
 
       return {

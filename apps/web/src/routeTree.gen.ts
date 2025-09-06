@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WithHeaderRouteImport } from './routes/_with-header'
 import { Route as NoHeaderRouteImport } from './routes/_no-header'
 import { Route as WithHeaderIndexRouteImport } from './routes/_with-header/index'
+import { Route as WithHeaderProfileRouteImport } from './routes/_with-header/profile'
 import { Route as NoHeaderLoginRouteImport } from './routes/_no-header/login'
 
 const WithHeaderRoute = WithHeaderRouteImport.update({
@@ -27,6 +28,11 @@ const WithHeaderIndexRoute = WithHeaderIndexRouteImport.update({
   path: '/',
   getParentRoute: () => WithHeaderRoute,
 } as any)
+const WithHeaderProfileRoute = WithHeaderProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => WithHeaderRoute,
+} as any)
 const NoHeaderLoginRoute = NoHeaderLoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -35,10 +41,12 @@ const NoHeaderLoginRoute = NoHeaderLoginRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/login': typeof NoHeaderLoginRoute
+  '/profile': typeof WithHeaderProfileRoute
   '/': typeof WithHeaderIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof NoHeaderLoginRoute
+  '/profile': typeof WithHeaderProfileRoute
   '/': typeof WithHeaderIndexRoute
 }
 export interface FileRoutesById {
@@ -46,18 +54,20 @@ export interface FileRoutesById {
   '/_no-header': typeof NoHeaderRouteWithChildren
   '/_with-header': typeof WithHeaderRouteWithChildren
   '/_no-header/login': typeof NoHeaderLoginRoute
+  '/_with-header/profile': typeof WithHeaderProfileRoute
   '/_with-header/': typeof WithHeaderIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/login' | '/'
+  fullPaths: '/login' | '/profile' | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/'
+  to: '/login' | '/profile' | '/'
   id:
     | '__root__'
     | '/_no-header'
     | '/_with-header'
     | '/_no-header/login'
+    | '/_with-header/profile'
     | '/_with-header/'
   fileRoutesById: FileRoutesById
 }
@@ -89,6 +99,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WithHeaderIndexRouteImport
       parentRoute: typeof WithHeaderRoute
     }
+    '/_with-header/profile': {
+      id: '/_with-header/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof WithHeaderProfileRouteImport
+      parentRoute: typeof WithHeaderRoute
+    }
     '/_no-header/login': {
       id: '/_no-header/login'
       path: '/login'
@@ -112,10 +129,12 @@ const NoHeaderRouteWithChildren = NoHeaderRoute._addFileChildren(
 )
 
 interface WithHeaderRouteChildren {
+  WithHeaderProfileRoute: typeof WithHeaderProfileRoute
   WithHeaderIndexRoute: typeof WithHeaderIndexRoute
 }
 
 const WithHeaderRouteChildren: WithHeaderRouteChildren = {
+  WithHeaderProfileRoute: WithHeaderProfileRoute,
   WithHeaderIndexRoute: WithHeaderIndexRoute,
 }
 

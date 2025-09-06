@@ -1,10 +1,15 @@
 import { LoginUseCase } from '../../application/use-cases/LoginUseCase';
 import { Credentials } from '../../domain/value-objects/Credentials';
 
+interface LoginRequestBody {
+  username?: string;
+  password?: string;
+}
+
 export class AuthController {
   constructor(private loginUseCase: LoginUseCase) {}
 
-  async login(body: any) {
+  async login(body: LoginRequestBody) {
     try {
       if (!body.username || !body.password) {
         return {

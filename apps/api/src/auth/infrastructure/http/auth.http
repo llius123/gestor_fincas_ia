@@ -75,3 +75,34 @@ Content-Type: application/json
 {}
 
 ###
+
+### Get Profile - Without Token (Should fail)
+GET {{base_url}}/api/profile
+Content-Type: application/json
+
+# Expected response (401):
+# {
+#   "success": false,
+#   "message": "Unauthorized - Valid JWT token required"
+# }
+
+###
+
+### Get Profile - With Valid Token (Should succeed)
+# First, run the login request above to get a token, then copy it here
+GET {{base_url}}/api/profile
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NTcxNjQyMzcsImV4cCI6MTc1NzI1MDYzNywiaXNzIjoiZ2VzdG9yLWZpbmNhcy1hcGkifQ.Mdmc395lhlHvVLG4lpxk0f8OZpymYR8LV6Mr-doePew
+
+# Expected response (200):
+# {
+#   "success": true,
+#   "message": "Profile data retrieved successfully",
+#   "user": {
+#     "userId": 1,
+#     "username": "admin"
+#   },
+#   "timestamp": "2025-01-01T00:00:00.000Z"
+# }
+
+###
