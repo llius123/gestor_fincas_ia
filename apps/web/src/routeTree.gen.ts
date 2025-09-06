@@ -9,68 +9,142 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as AboutRouteImport } from './routes/about'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as WithHeaderRouteImport } from './routes/_with-header'
+import { Route as NoHeaderRouteImport } from './routes/_no-header'
+import { Route as WithHeaderIndexRouteImport } from './routes/_with-header/index'
+import { Route as WithHeaderAboutRouteImport } from './routes/_with-header/about'
+import { Route as NoHeaderLoginRouteImport } from './routes/_no-header/login'
 
-const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
+const WithHeaderRoute = WithHeaderRouteImport.update({
+  id: '/_with-header',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
+const NoHeaderRoute = NoHeaderRouteImport.update({
+  id: '/_no-header',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WithHeaderIndexRoute = WithHeaderIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => WithHeaderRoute,
+} as any)
+const WithHeaderAboutRoute = WithHeaderAboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => WithHeaderRoute,
+} as any)
+const NoHeaderLoginRoute = NoHeaderLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => NoHeaderRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/about': typeof AboutRoute
+  '/login': typeof NoHeaderLoginRoute
+  '/about': typeof WithHeaderAboutRoute
+  '/': typeof WithHeaderIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/about': typeof AboutRoute
+  '/login': typeof NoHeaderLoginRoute
+  '/about': typeof WithHeaderAboutRoute
+  '/': typeof WithHeaderIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/about': typeof AboutRoute
+  '/_no-header': typeof NoHeaderRouteWithChildren
+  '/_with-header': typeof WithHeaderRouteWithChildren
+  '/_no-header/login': typeof NoHeaderLoginRoute
+  '/_with-header/about': typeof WithHeaderAboutRoute
+  '/_with-header/': typeof WithHeaderIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about'
+  fullPaths: '/login' | '/about' | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about'
-  id: '__root__' | '/' | '/about'
+  to: '/login' | '/about' | '/'
+  id:
+    | '__root__'
+    | '/_no-header'
+    | '/_with-header'
+    | '/_no-header/login'
+    | '/_with-header/about'
+    | '/_with-header/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AboutRoute: typeof AboutRoute
+  NoHeaderRoute: typeof NoHeaderRouteWithChildren
+  WithHeaderRoute: typeof WithHeaderRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
+    '/_with-header': {
+      id: '/_with-header'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof WithHeaderRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
+    '/_no-header': {
+      id: '/_no-header'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof NoHeaderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_with-header/': {
+      id: '/_with-header/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof WithHeaderIndexRouteImport
+      parentRoute: typeof WithHeaderRoute
+    }
+    '/_with-header/about': {
+      id: '/_with-header/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof WithHeaderAboutRouteImport
+      parentRoute: typeof WithHeaderRoute
+    }
+    '/_no-header/login': {
+      id: '/_no-header/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof NoHeaderLoginRouteImport
+      parentRoute: typeof NoHeaderRoute
     }
   }
 }
 
+interface NoHeaderRouteChildren {
+  NoHeaderLoginRoute: typeof NoHeaderLoginRoute
+}
+
+const NoHeaderRouteChildren: NoHeaderRouteChildren = {
+  NoHeaderLoginRoute: NoHeaderLoginRoute,
+}
+
+const NoHeaderRouteWithChildren = NoHeaderRoute._addFileChildren(
+  NoHeaderRouteChildren,
+)
+
+interface WithHeaderRouteChildren {
+  WithHeaderAboutRoute: typeof WithHeaderAboutRoute
+  WithHeaderIndexRoute: typeof WithHeaderIndexRoute
+}
+
+const WithHeaderRouteChildren: WithHeaderRouteChildren = {
+  WithHeaderAboutRoute: WithHeaderAboutRoute,
+  WithHeaderIndexRoute: WithHeaderIndexRoute,
+}
+
+const WithHeaderRouteWithChildren = WithHeaderRoute._addFileChildren(
+  WithHeaderRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AboutRoute: AboutRoute,
+  NoHeaderRoute: NoHeaderRouteWithChildren,
+  WithHeaderRoute: WithHeaderRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

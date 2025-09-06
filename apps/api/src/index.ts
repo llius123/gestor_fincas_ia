@@ -1,5 +1,6 @@
 import { Elysia, t } from "elysia";
 import { swagger } from "@elysiajs/swagger";
+import { cors } from "@elysiajs/cors";
 import { db } from "./db";
 import { SqliteUserRepository } from "./auth/infrastructure/repositories/SqliteUserRepository";
 import { SimpleAuthenticationService } from "./auth/infrastructure/services/SimpleAuthenticationService";
@@ -13,6 +14,12 @@ const loginUseCase = new LoginUseCase(userRepository, authService);
 const authController = new AuthController(loginUseCase);
 
 const app = new Elysia()
+  .use(cors({
+    origin: ['http://localhost:5173', 'http://localhost:3000'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+  }))
   .use(
     swagger({
       documentation: {
