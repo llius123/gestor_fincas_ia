@@ -3,7 +3,8 @@
     "allow": [
       "Bash(bun add:*)",
       "Bash(bunx tailwindcss init:*)",
-      "Bash(bun remove:*)"
+      "Bash(bun remove:*)",
+      "WebFetch(domain:daisyui.com)"
     ],
     "deny": [],
     "ask": []

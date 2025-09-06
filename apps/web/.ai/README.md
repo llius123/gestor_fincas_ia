@@ -36,3 +36,13 @@ Utiliza **TanStack Router** para el manejo de rutas con generación automática 
 ### Configuración
 
 Las rutas se generan automáticamente en `routeTree.gen.ts` mediante el plugin de Vite.
+
+## Styling
+
+Utiliza **TailwindCSS v4** con **DaisyUI** para el sistema de diseño y componentes UI.
+
+### Tecnologías de Styling
+
+- **tailwindcss@4.x**: Framework CSS utility-first (última versión)
+- **@tailwindcss/postcss**: Plugin PostCSS oficial para TailwindCSS v4
+- **daisyui@5.x**: Librería de componentes UI basada en TailwindCSS

@@ -7,16 +7,19 @@ export const Route = createFileRoute('/')({
 function Index() {
   return (
     <div>
-      <h3 className="text-2xl font-semibold mb-4">Welcome Home!</h3>
+      <h3 className="text-3xl font-bold mb-6">Welcome Home!</h3>
       <div className="flex gap-4">
-        <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-          One
+        <button className="btn btn-primary">
+          Primary
         </button>
-        <button className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
-          Two
+        <button className="btn btn-secondary">
+          Secondary
         </button>
-        <button className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600">
-          Three
+        <button className="btn btn-accent">
+          Accent
+        </button>
+        <button className="btn btn-outline btn-info">
+          Info Outline
         </button>
       </div>
     </div>
