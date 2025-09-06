@@ -115,6 +115,7 @@ const app = new Elysia()
       200: t.Object({
         success: t.Boolean(),
         message: t.String(),
+        token: t.String(),
         user: t.Optional(t.Object({
           id: t.Number(),
           username: t.String()

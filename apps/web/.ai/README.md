@@ -17,6 +17,10 @@ Este directorio contiene la aplicación web frontend del sistema de gestión de 
 - Interfaz para consultas y predicciones de IA
 - Sistema de notificaciones y alertas
 
+## Normas de desarollo
+
+- No usar `any`
+
 ## Routes
 
 Utiliza **TanStack Router** para el manejo de rutas con generación automática y tipado completo.
@@ -268,9 +272,3 @@ components/
     ├── Modal.tsx
     └── Card.tsx
 ```
-
-**Ventajas de organizar por rutas:**
-- **Cohesión**: Todo lo relacionado está junto
-- **Mantenimiento**: Fácil encontrar y modificar funcionalidades
-- **Escalabilidad**: Cada ruta es independiente
-- **Colaboración**: Equipos pueden trabajar en rutas separadas

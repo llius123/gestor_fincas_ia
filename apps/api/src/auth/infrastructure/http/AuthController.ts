@@ -29,6 +29,7 @@ export class AuthController {
           body: {
             success: true,
             message: 'Login successful',
+            token: result.token,
             user: {
               id: result.user?.id,
               username: result.user?.username

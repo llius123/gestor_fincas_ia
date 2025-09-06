@@ -6,6 +6,7 @@ import { AuthenticationService } from '../../domain/services/AuthenticationServi
 export interface LoginResult {
   success: boolean;
   user?: User;
+  token?: string;
   error?: string;
 }
 
@@ -32,9 +33,16 @@ export class LoginUseCase {
         throw new InvalidCredentialsError();
       }
 
+      const token = this.authService.generateJwtToken({
+        userId: user.id,
+        username: user.username,
+        iat: Math.floor(Date.now() / 1000)
+      });
+
       return {
         success: true,
-        user
+        user,
+        token
       };
     } catch (error) {
       return {
