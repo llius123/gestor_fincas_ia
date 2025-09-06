@@ -6,7 +6,9 @@
       "Bash(bun remove:*)",
       "WebFetch(domain:daisyui.com)",
       "Bash(curl:*)",
-      "Bash(bun run:*)"
+      "Bash(bun run:*)",
+      "Bash(git checkout:*)",
+      "WebFetch(domain:localhost)"
     ],
     "deny": [],
     "ask": []

@@ -1,6 +1,9 @@
+export type UserRole = 'Vecino' | 'Administrador';
+
 interface User {
   id: number
   username: string
+  role: UserRole
 }
 
 interface ProfileData {
@@ -14,7 +17,7 @@ interface ProfileData {
 }
 
 interface ProfileViewProps {
-  user: User | null
+  user: User
   profileData: ProfileData | undefined
   isLoading: boolean
   error: string | null
@@ -52,19 +55,19 @@ export function ProfileView({ user, profileData, isLoading, error, onLogout }: P
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">
             <h2 className="card-title text-2xl">Mi Perfil</h2>
-            
+
             <div className="divider"></div>
-            
+
             <div className="space-y-4">
               <div className="form-control">
                 <label className="label">
                   <span className="label-text font-semibold">ID de Usuario:</span>
                 </label>
-                <input 
-                  type="text" 
-                  value={user?.id || profileData?.user?.userId || ''} 
-                  className="input input-bordered" 
-                  disabled 
+                <input
+                  type="text"
+                  value={user.id || profileData?.user.userId || ''}
+                  className="input input-bordered"
+                  disabled
                 />
               </div>
 
@@ -72,11 +75,23 @@ export function ProfileView({ user, profileData, isLoading, error, onLogout }: P
                 <label className="label">
                   <span className="label-text font-semibold">Nombre de Usuario:</span>
                 </label>
-                <input 
-                  type="text" 
-                  value={user?.username || profileData?.user?.username || ''} 
-                  className="input input-bordered" 
-                  disabled 
+                <input
+                  type="text"
+                  value={user.username || profileData?.user.username || ''}
+                  className="input input-bordered"
+                  disabled
+                />
+              </div>
+
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text font-semibold">Rol:</span>
+                </label>
+                <input
+                  type="text"
+                  value={user.role || ''}
+                  className="input input-bordered"
+                  disabled
                 />
               </div>
 
@@ -85,11 +100,11 @@ export function ProfileView({ user, profileData, isLoading, error, onLogout }: P
                   <label className="label">
                     <span className="label-text font-semibold">Última consulta:</span>
                   </label>
-                  <input 
-                    type="text" 
-                    value={new Date(profileData.timestamp).toLocaleString('es-ES')} 
-                    className="input input-bordered" 
-                    disabled 
+                  <input
+                    type="text"
+                    value={new Date(profileData.timestamp).toLocaleString('es-ES')}
+                    className="input input-bordered"
+                    disabled
                   />
                 </div>
               )}
@@ -98,7 +113,7 @@ export function ProfileView({ user, profileData, isLoading, error, onLogout }: P
             <div className="divider"></div>
 
             <div className="card-actions justify-end">
-              <button 
+              <button
                 className="btn btn-outline btn-error"
                 onClick={onLogout}
               >

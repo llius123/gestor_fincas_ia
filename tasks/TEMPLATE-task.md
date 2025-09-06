@@ -41,11 +41,10 @@
 - [Consideración 2: rendimiento, seguridad, etc.]
 - [Consideración 3: compatibilidad, dependencias, etc.]
 
----
+# Ultimo paso antes de empezar la tarea
 
-## Instrucciones de Uso
-1. Copia este template
-2. Renómbralo como `TODO-[nombre-descriptivo].md`
-3. Rellena todas las secciones
-4. Borra esta sección de "Instrucciones de Uso"
-5. Comparte el archivo completo conmigo
+- Debes leer y entender estos readme
+.ai\README.md
+apps\api\.ai\README.md
+apps\web\.ai\README.md
+- Debes verificar tu solucion y siempre darme la correcta.
