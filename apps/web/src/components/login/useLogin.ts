@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
+import { useNavigate } from '@tanstack/react-router'
 import { useAuth } from '../../hooks/useAuth'
 
 interface LoginCredentials {
@@ -19,6 +20,7 @@ interface LoginResponse {
 
 export const useLogin = () => {
   const { login: setAuth } = useAuth()
+  const navigate = useNavigate()
   const [credentials, setCredentials] = useState<LoginCredentials>({
     username: '',
     password: ''
@@ -42,10 +44,17 @@ export const useLogin = () => {
       return result
     },
     onSuccess: (data: LoginResponse) => {
-      console.log('Login successful')
+      console.log('Login successful', data)
       if (data.token && data.user) {
+        console.log('Setting auth and navigating to profile...')
         // Use the auth hook to manage authentication state
         setAuth(data.token, data.user)
+        // Redirect to profile page after successful login
+        setTimeout(() => {
+          navigate({ to: '/profile' })
+        }, 100)
+      } else {
+        console.error('Missing token or user in response:', data)
       }
     },
     onError: (error) => {

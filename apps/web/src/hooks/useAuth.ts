@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 interface User {
   id: number
@@ -12,62 +12,44 @@ interface AuthState {
 }
 
 export const useAuth = () => {
-  const [authState, setAuthState] = useState<AuthState>({
-    isAuthenticated: false,
-    user: null,
-    token: null
-  })
+  const logout = useCallback(() => {
+    localStorage.removeItem('jwt-token')
+    localStorage.removeItem('user-info')
+  }, [])
 
   // Check for existing token on mount
   useEffect(() => {
     const token = localStorage.getItem('jwt-token')
     const userInfo = localStorage.getItem('user-info')
-    
-    if (token && userInfo) {
-      try {
-        const user = JSON.parse(userInfo)
-        setAuthState({
-          isAuthenticated: true,
-          user,
-          token
-        })
-      } catch (error) {
-        console.error('Error parsing user info:', error)
-        logout()
-      }
+
+    if (!token || !userInfo) {
+      logout()
     }
-  }, [])
+  }, [logout])
 
   const login = (token: string, user: User) => {
     localStorage.setItem('jwt-token', token)
     localStorage.setItem('user-info', JSON.stringify(user))
-    setAuthState({
-      isAuthenticated: true,
-      user,
-      token
-    })
-  }
-
-  const logout = () => {
-    localStorage.removeItem('jwt-token')
-    localStorage.removeItem('user-info')
-    setAuthState({
-      isAuthenticated: false,
-      user: null,
-      token: null
-    })
   }
 
   const getAuthHeaders = () => {
-    return authState.token ? {
-      'Authorization': `Bearer ${authState.token}`
-    } : {}
+    return {
+      'Authorization': `Bearer ${localStorage.getItem('jwt-token')}`
+    }
+  }
+  const isAuthenticated = () => {
+    return localStorage.getItem('jwt-token') && localStorage.getItem('user-info') ? true : false
+  }
+
+  const getUser = () => {
+    return localStorage.getItem('user-info');
   }
 
   return {
-    ...authState,
     login,
     logout,
-    getAuthHeaders
+    getAuthHeaders,
+    isAuthenticated,
+    user: () => getUser
   }
 }

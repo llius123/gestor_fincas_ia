@@ -30,6 +30,11 @@ function WithHeaderLayout() {
                 Login
               </Link>
             </li>
+            <li>
+              <Link to="/profile" className="[&.active]:text-primary">
+                Profile
+              </Link>
+            </li>
           </ul>
         </div>
       </div>
