@@ -40,3 +40,11 @@
 - [Consideración 1: variables de entorno, configuración, etc.]
 - [Consideración 2: rendimiento, seguridad, etc.]
 - [Consideración 3: compatibilidad, dependencias, etc.]
+
+# Ultimo paso antes de empezar la tarea
+
+- Debes leer y entender estos readme
+.ai\README.md
+apps\api\.ai\README.md
+apps\web\.ai\README.md
+- Debes verificar tu solucion y siempre darme la correcta.

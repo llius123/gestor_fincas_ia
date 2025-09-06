@@ -14,6 +14,7 @@ export class SqliteUserRepository implements UserRepository {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL,
+        role TEXT NOT NULL DEFAULT 'Vecino',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
@@ -25,7 +26,7 @@ export class SqliteUserRepository implements UserRepository {
     if (existingUser.count === 0) {
       // Simple password hash for demo (in production use proper hashing)
       const defaultPasswordHash = 'admin123'; // In production: use bcrypt or similar
-      this.db.query('INSERT INTO users (username, password) VALUES (?, ?)').run('admin', defaultPasswordHash);
+      this.db.query('INSERT INTO users (username, password, role) VALUES (?, ?, ?)').run('admin', defaultPasswordHash, 'Administrador');
     }
   }
 
@@ -37,6 +38,7 @@ export class SqliteUserRepository implements UserRepository {
       id: row.id,
       username: row.username,
       password: row.password,
+      role: row.role,
       createdAt: new Date(row.created_at),
       updatedAt: new Date(row.updated_at)
     };
@@ -50,6 +52,7 @@ export class SqliteUserRepository implements UserRepository {
       id: row.id,
       username: row.username,
       password: row.password,
+      role: row.role,
       createdAt: new Date(row.created_at),
       updatedAt: new Date(row.updated_at)
     };
@@ -60,16 +63,16 @@ export class SqliteUserRepository implements UserRepository {
       // Update existing user
       this.db.query(`
         UPDATE users 
-        SET username = ?, password = ?, updated_at = CURRENT_TIMESTAMP 
+        SET username = ?, password = ?, role = ?, updated_at = CURRENT_TIMESTAMP 
         WHERE id = ?
-      `).run(user.username, user.password, user.id);
+      `).run(user.username, user.password, user.role, user.id);
       return user;
     } else {
       // Create new user
       const result = this.db.query(`
-        INSERT INTO users (username, password) 
-        VALUES (?, ?)
-      `).run(user.username, user.password);
+        INSERT INTO users (username, password, role) 
+        VALUES (?, ?, ?)
+      `).run(user.username, user.password, user.role);
       
       return {
         ...user,

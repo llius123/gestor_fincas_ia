@@ -37,7 +37,8 @@ export class AuthController {
             token: result.token,
             user: {
               id: result.user?.id,
-              username: result.user?.username
+              username: result.user?.username,
+              role: result.user?.role
               // Don't return password in response
             }
           }

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
-import { useAuth } from '../../hooks/useAuth'
+import { useAuth, type UserRole } from '../../hooks/useAuth'
 
 interface LoginCredentials {
   username: string
@@ -15,6 +15,7 @@ interface LoginResponse {
   user?: {
     id: number
     username: string
+    role: UserRole
   }
 }
 

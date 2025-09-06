@@ -1,17 +1,22 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useEffect, useCallback } from 'react'
+
+export type UserRole = 'Vecino' | 'Administrador';
 
 interface User {
   id: number
   username: string
+  role: UserRole
 }
 
-interface AuthState {
+interface UseAuth {
+  login: (token: string, user: User) => void
+  logout: () => void
+  getAuthHeaders: () => { Authorization: string }
   isAuthenticated: boolean
-  user: User | null
-  token: string | null
+  user: () => string | null
 }
 
-export const useAuth = () => {
+export const useAuth = (): UseAuth => {
   const logout = useCallback(() => {
     localStorage.removeItem('jwt-token')
     localStorage.removeItem('user-info')
@@ -37,11 +42,11 @@ export const useAuth = () => {
       'Authorization': `Bearer ${localStorage.getItem('jwt-token')}`
     }
   }
-  const isAuthenticated = () => {
-    return localStorage.getItem('jwt-token') && localStorage.getItem('user-info') ? true : false
+  const _isAuthenticated = () => {
+    return !!(localStorage.getItem('jwt-token') && localStorage.getItem('user-info'))
   }
 
-  const getUser = () => {
+  const _getUser = () => {
     return localStorage.getItem('user-info');
   }
 
@@ -49,7 +54,7 @@ export const useAuth = () => {
     login,
     logout,
     getAuthHeaders,
-    isAuthenticated,
-    user: () => getUser
+    isAuthenticated: _isAuthenticated(),
+    user: _getUser
   }
 }

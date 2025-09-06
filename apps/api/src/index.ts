@@ -126,7 +126,8 @@ const app = new Elysia()
         token: t.String(),
         user: t.Optional(t.Object({
           id: t.Number(),
-          username: t.String()
+          username: t.String(),
+          role: t.String()
         }))
       }),
       400: t.Object({
