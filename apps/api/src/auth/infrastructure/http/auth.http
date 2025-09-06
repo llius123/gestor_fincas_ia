@@ -1,0 +1,66 @@
+### Gestor Fincas IA - API Tests
+### Base URL: http://localhost:3001
+
+@base_url = http://localhost:3001
+
+
+### Login - Success Case
+POST {{base_url}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin123"
+}
+
+###
+
+### Login - Invalid Username
+POST {{base_url}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "invaliduser",
+  "password": "admin123"
+}
+
+###
+
+### Login - Invalid Password
+POST {{base_url}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "wrongpassword"
+}
+
+###
+
+### Login - Missing Username
+POST {{base_url}}/api/auth/login
+Content-Type: application/json
+
+{
+  "password": "admin123"
+}
+
+###
+
+### Login - Missing Password
+POST {{base_url}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin"
+}
+
+###
+
+### Login - Empty Body
+POST {{base_url}}/api/auth/login
+Content-Type: application/json
+
+{}
+
+###

@@ -13,3 +13,7 @@ Es un monorepo montado con turborepo su misión es gestionar el front y back por
 
 - Turborepo para la gestión del monorepo
 - Sistema de gestión de fincas con inteligencia artificial
+
+## Vscode plugins recomended
+- https://marketplace.visualstudio.com/items?itemName=qwtel.sqlite-viewer
+- https://marketplace.visualstudio.com/items?itemName=humao.rest-client

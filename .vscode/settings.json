@@ -1,0 +1,10 @@
+{
+  "rest-client.environmentVariables": {
+    "local": {
+      "base_url": "http://localhost:3001"
+    },
+    "dev": {
+      "base_url": "http://localhost:3001"
+    }
+  }
+}
