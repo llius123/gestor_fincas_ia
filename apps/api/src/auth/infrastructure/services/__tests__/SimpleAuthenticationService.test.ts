@@ -1,6 +1,7 @@
 import { describe, test, expect, beforeEach } from "bun:test";
 import jwt from "jsonwebtoken";
 import { SimpleAuthenticationService } from "../SimpleAuthenticationService";
+import { JwtPayload } from "./types";
 
 describe("SimpleAuthenticationService", () => {
   let authService: SimpleAuthenticationService;
@@ -93,7 +94,7 @@ describe("SimpleAuthenticationService", () => {
       const token = authService.generateJwtToken(payload);
       
       // Decode without verification to check structure
-      const decoded = jwt.decode(token) as any;
+      const decoded = jwt.decode(token) as JwtPayload;
       expect(decoded).toHaveProperty("iss", "gestor-fincas-api");
     });
 
@@ -102,7 +103,7 @@ describe("SimpleAuthenticationService", () => {
       const token = authService.generateJwtToken(payload);
       
       // Decode without verification to check structure
-      const decoded = jwt.decode(token) as any;
+      const decoded = jwt.decode(token) as JwtPayload;
       expect(decoded).toHaveProperty("exp");
       expect(typeof decoded.exp).toBe("number");
       expect(decoded.exp).toBeGreaterThan(Date.now() / 1000);

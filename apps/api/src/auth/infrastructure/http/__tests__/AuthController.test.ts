@@ -7,6 +7,7 @@ import { SimpleAuthenticationService } from "../../services/SimpleAuthentication
 import { LoginUseCase } from "../../../application/use-cases/LoginUseCase";
 import { AuthController } from "../AuthController";
 import { JwtAuthMiddleware } from "../../middleware/JwtAuthMiddleware";
+import { LoginResponse, ErrorResponse, ProfileResponse, ValidationErrorResponse } from "./types";
 
 // Create test database for testing
 const createTestDb = () => {
@@ -92,7 +93,7 @@ describe("Authentication Endpoints", () => {
       }));
 
       expect(response.status).toBe(200);
-      const body = await response.json() as any;
+      const body = await response.json() as LoginResponse;
       
       expect(body).toHaveProperty("success", true);
       expect(body).toHaveProperty("message", "Login successful");
@@ -101,8 +102,8 @@ describe("Authentication Endpoints", () => {
       expect(body.user).toHaveProperty("id");
       expect(body.user).toHaveProperty("username", "admin");
       expect(body.user).toHaveProperty("role");
-      expect(typeof body.token).toBe("string");
-      expect(body.token.length).toBeGreaterThan(0);
+      expect(typeof body.token!).toBe("string");
+      expect(body.token!.length).toBeGreaterThan(0);
     });
 
     test("should fail with invalid username", async () => {
@@ -118,7 +119,7 @@ describe("Authentication Endpoints", () => {
       }));
 
       expect(response.status).toBe(401);
-      const body = await response.json() as any;
+      const body = await response.json() as ErrorResponse;
 
       expect(body).toHaveProperty("success", false);
       expect(body).toHaveProperty("message", "Invalid credentials");
@@ -139,7 +140,7 @@ describe("Authentication Endpoints", () => {
       }));
 
       expect(response.status).toBe(401);
-      const body = await response.json() as any;
+      const body = await response.json() as ErrorResponse;
 
       expect(body).toHaveProperty("success", false);
       expect(body).toHaveProperty("message", "Invalid credentials");
@@ -159,7 +160,7 @@ describe("Authentication Endpoints", () => {
       }));
 
       expect(response.status).toBe(422); // Elysia validation error
-      const body = await response.json() as any;
+      const body = await response.json() as ValidationErrorResponse;
 
       // Elysia validation errors have different structure
       expect(body).toHaveProperty("type");
@@ -178,7 +179,7 @@ describe("Authentication Endpoints", () => {
       }));
 
       expect(response.status).toBe(422); // Elysia validation error
-      const body = await response.json() as any;
+      const body = await response.json() as ValidationErrorResponse;
 
       // Elysia validation errors have different structure
       expect(body).toHaveProperty("type");
@@ -218,8 +219,8 @@ describe("Authentication Endpoints", () => {
         })
       }));
       
-      const loginBody = await loginResponse.json() as any;
-      authToken = loginBody.token;
+      const loginBody = await loginResponse.json() as LoginResponse;
+      authToken = loginBody.token!;
     });
 
     test("should get profile with valid token", async () => {
@@ -231,7 +232,7 @@ describe("Authentication Endpoints", () => {
       }));
 
       expect(response.status).toBe(200);
-      const body = await response.json() as any;
+      const body = await response.json() as ProfileResponse;
 
       expect(body).toHaveProperty("success", true);
       expect(body).toHaveProperty("message", "Profile data retrieved successfully");
@@ -247,7 +248,7 @@ describe("Authentication Endpoints", () => {
       }));
 
       expect(response.status).toBe(401);
-      const body = await response.json() as any;
+      const body = await response.json() as ErrorResponse;
 
       expect(body).toHaveProperty("success", false);
       expect(body).toHaveProperty("message");
@@ -262,7 +263,7 @@ describe("Authentication Endpoints", () => {
       }));
 
       expect(response.status).toBe(401);
-      const body = await response.json() as any;
+      const body = await response.json() as ErrorResponse;
 
       expect(body).toHaveProperty("success", false);
       expect(body).toHaveProperty("message");

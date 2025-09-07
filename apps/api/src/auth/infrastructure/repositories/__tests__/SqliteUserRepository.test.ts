@@ -2,6 +2,7 @@ import { describe, test, expect, beforeEach } from "bun:test";
 import { Database } from "bun:sqlite";
 import { SqliteUserRepository } from "../SqliteUserRepository";
 import { User } from "../../../domain/entities/User";
+import { TableInfoResult } from "./types";
 
 describe("SqliteUserRepository", () => {
   let db: Database;
@@ -18,7 +19,7 @@ describe("SqliteUserRepository", () => {
       // Check if table was created by trying to query it
       const tableInfo = db.query("SELECT name FROM sqlite_master WHERE type='table' AND name='users'").get();
       expect(tableInfo).toBeDefined();
-      expect((tableInfo as any).name).toBe("users");
+      expect((tableInfo as TableInfoResult).name).toBe("users");
     });
 
     test("should seed default user on initialization", async () => {

@@ -1,6 +1,7 @@
 import { Database } from "bun:sqlite";
 import { User } from '../../domain/entities/User';
 import { UserRepository } from '../../domain/ports/UserRepository';
+import { UserRow, CountResult } from './types';
 
 export class SqliteUserRepository implements UserRepository {
   constructor(private db: Database) {
@@ -22,7 +23,7 @@ export class SqliteUserRepository implements UserRepository {
   }
 
   private seedDefaultUser(): void {
-    const existingUser = this.db.query('SELECT COUNT(*) as count FROM users').get() as { count: number };
+    const existingUser = this.db.query('SELECT COUNT(*) as count FROM users').get() as CountResult;
     if (existingUser.count === 0) {
       // Simple password hash for demo (in production use proper hashing)
       const defaultPasswordHash = 'admin123'; // In production: use bcrypt or similar
@@ -31,7 +32,7 @@ export class SqliteUserRepository implements UserRepository {
   }
 
   async findByUsername(username: string): Promise<User | null> {
-    const row = this.db.query('SELECT * FROM users WHERE username = ?').get(username) as any;
+    const row = this.db.query('SELECT * FROM users WHERE username = ?').get(username) as UserRow | null;
     if (!row) return null;
 
     return {
@@ -45,7 +46,7 @@ export class SqliteUserRepository implements UserRepository {
   }
 
   async findById(id: number): Promise<User | null> {
-    const row = this.db.query('SELECT * FROM users WHERE id = ?').get(id) as any;
+    const row = this.db.query('SELECT * FROM users WHERE id = ?').get(id) as UserRow | null;
     if (!row) return null;
 
     return {
