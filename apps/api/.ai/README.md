@@ -118,7 +118,60 @@ class AuthController { ... }              // Adaptador HTTP
 ### Runtime y Framework
 - **Bun**: Runtime JavaScript/TypeScript rápido
 - **Elysia**: Framework web minimalista y rápido
-- **TypeScript**: Tipado estático
+- **TypeScript**: Tipado estático estricto
+
+### 🚨 IMPORTANTE: TypeScript Estricto
+
+⚠️ **OBLIGATORIO verificar errores TypeScript** en CUALQUIER código:
+
+- **Herramienta**: `mcp__ide__getDiagnostics` para verificar errores
+- **Momento**: Antes de cada commit, en cada archivo modificado
+- **Estándar**: Zero errores TypeScript en producción
+- **Incluye**: Controladores, servicios, repositorios, casos de uso, tests, etc.
+
+### 🚫 PROHIBIDO: Uso de `any`
+
+❌ **NUNCA usar `any`** - Evitar completamente:
+
+```typescript
+// ❌ INCORRECTO
+const data = response.json() as any;
+const result = someFunction() as any;
+
+// ✅ CORRECTO
+interface ResponseData { success: boolean; message: string; }
+const data = response.json() as ResponseData;
+
+// ✅ ALTERNATIVA para casos complejos
+const data = response.json() as unknown;
+```
+
+- **Regla**: Crear interfaces específicas en lugar de `any`
+- **Excepción**: Solo en casos extremos donde el tipado es imposible
+- **Alternativa**: Usar `unknown` si es necesario tipado dinámico
+
+### 🔍 OBLIGATORIO: Verificación y Validación de Soluciones
+
+🚨 **TODA solución debe ser verificada MÚLTIPLES VECES**:
+
+1. **Verificación Técnica**:
+   - Ejecutar `bun test` - DEBE pasar sin errores
+   - Usar `mcp__ide__getDiagnostics` - DEBE estar sin errores TS
+   - Probar funcionalmente - DEBE funcionar como se especifica
+
+2. **Revisión de Calidad**:
+   - Seguir arquitectura hexagonal
+   - Sin uso de `any`
+   - Naming conventions correctas
+   - Error handling implementado
+
+3. **Validación Final**:
+   - **NUNCA entregar** código que no compile
+   - **NUNCA entregar** tests que fallen
+   - **NUNCA entregar** soluciones no probadas
+   - **SIEMPRE verificar** al menos 2 veces antes de entregar
+
+⚠️ **Es MEJOR tardarse más verificando que entregar código roto**
 
 ### Base de Datos
 - **bun:sqlite**: SQLite nativo integrado en Bun
@@ -173,7 +226,69 @@ CORS_ORIGIN=https://yourdomain.com
 API_PORT=3001
 ```
 
-### Testing de Endpoints
+## Testing
+
+La API incluye tanto **tests automatizados** como **tests manuales** para asegurar calidad y funcionalidad.
+
+### Tests Automatizados (Bun Test)
+
+#### Estructura de Tests
+
+Los tests están organizados cerca del código fuente usando carpetas `__tests__`:
+
+```
+src/
+├── __tests__/                           # Tests generales (health, db)
+└── {domain}/
+    ├── application/
+    │   └── use-cases/
+    │       └── __tests__/               # Tests de casos de uso
+    ├── infrastructure/
+    │   ├── http/
+    │   │   └── __tests__/               # Tests de endpoints/controllers
+    │   ├── services/
+    │   │   └── __tests__/               # Tests de servicios
+    │   └── repositories/
+    │       └── __tests__/               # Tests de repositorios
+```
+
+#### Tipos de Tests Implementados
+
+| Tipo | Ubicación | Propósito | Ejemplos |
+|------|-----------|-----------|----------|
+| **Unit Tests** | Cerca de servicios/casos de uso | Lógica de negocio | `LoginUseCase.test.ts` |
+| **Integration Tests** | Cerca de repositorios | Interacción con BD | `SqliteUserRepository.test.ts` |
+| **E2E Tests** | Cerca de controladores | Endpoints completos | `AuthController.test.ts` |
+| **System Tests** | `/src/__tests__/` | Funcionalidad general | `health.test.ts`, `db.test.ts` |
+
+
+#### Convenciones de Testing
+
+- **Archivos de test**: `*.test.ts`
+- **Ubicación**: Carpeta `__tests__/` cerca del código
+- **Framework**: Bun Test (nativo)
+- **Mocking**: Implementaciones in-memory para BD
+- **Aislamiento**: Cada test usa instancias limpias
+
+#### ⚠️ IMPORTANTE: Verificación de Errores TypeScript
+
+🚨 **SIEMPRE verificar errores de TypeScript** en cualquier archivo modificado:
+
+1. **Al crear/modificar código**: Usar `mcp__ide__getDiagnostics` para verificar errores TS
+2. **Errores comunes**:
+   - `'variable' is possibly 'null'` → Usar optional chaining (`?.`)
+   - `'variable' is of type 'unknown'` → Crear interface específica, NO usar `any`
+   - Incompatibilidades de tipos → Revisar imports y tipados
+   - Missing return type → Agregar tipos de retorno explícitos
+   - **NUNCA usar `any`** → Crear interfaces o usar `unknown`
+
+3. **Comando de verificación**:
+   ```bash
+   # Ver errores TypeScript en IDE antes de hacer commit
+   # El código puede funcionar pero tener errores TS
+   ```
+
+### Testing Manual (REST Client)
 
 Cada endpoint debe incluir tests en el archivo `api.http` usando **REST Client** de VSCode.
 
@@ -401,11 +516,18 @@ src/
 
 - [ ] **Arquitectura hexagonal** respetada
 - [ ] **Domain layer** sin dependencias externas
+- [ ] **Tests automatizados** creados en carpeta `__tests__/`
+- [ ] **Tests cubren** happy path y error cases
 - [ ] **Swagger documentation** completa
-- [ ] **Tests en api.http** para todos los casos
+- [ ] **Tests en api.http** para pruebas manuales
 - [ ] **Error handling** implementado
-- [ ] **TypeScript** sin errores
+- [ ] **TypeScript** sin errores en TODO el código (usar `mcp__ide__getDiagnostics`)
+- [ ] **Verificar errores TS** en cada archivo modificado
+- [ ] **Sin `any`** - Usar interfaces específicas o `unknown`
 - [ ] **Naming conventions** seguidas
+- [ ] **`bun test`** pasa sin errores
+- [ ] **VALIDACIÓN MÚLTIPLE** - Verificar solución al menos 2 veces
+- [ ] **FUNCIONAMIENTO REAL** - Probar que funciona, no solo que compila
 
 ### Health Checks
 
